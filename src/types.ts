@@ -10,6 +10,7 @@ export enum PlaylistType {
   default = 'default',
   featured = 'featured',
   discover_weekly = 'discover-weekly',
+  recently_played= 'recently-played'
 }
 
 export enum ConfigEntry {
@@ -105,12 +106,12 @@ export interface PlaybackOptions {
 }
 
 export interface ConnectDevice {
-  id: string;
+  device_id: string;
   is_active: boolean;
   is_private_session: boolean;
   is_restricted: boolean;
   name: string;
-  type: string;
+  device_type: string;
   volume_percent: number;
 }
 

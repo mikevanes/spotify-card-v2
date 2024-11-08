@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 * [ ] Reproducable on a plain lovelace panel without card, style or theme mods
-* [ ] Using latest version of spotcast and spotify-card [ ]
+* [ ] Using latest version of spotcast and spotify-card-v2 [ ]
 * [ ] Using latest stable version of Home Assistant
 * [ ] I have Spotify Premium
 * [ ] I have setup the Spotify integration in Home Assistant

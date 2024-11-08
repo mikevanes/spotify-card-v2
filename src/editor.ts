@@ -22,7 +22,7 @@ import {
 } from './types';
 import { localize } from './localize/localize';
 
-export const PLAYLIST_TYPES = ['default', 'featured', 'discover-weekly'];
+export const PLAYLIST_TYPES = ['default', 'featured', 'discover-weekly', 'recently-played'];
 
 //define tabs of editor
 const options = {
@@ -46,7 +46,7 @@ const options = {
   },
 };
 
-@customElement('spotify-card-editor')
+@customElement('spotify-card-v2-editor')
 export class SpotifyCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ type: Object }) public hass!: HomeAssistant;
 
@@ -169,7 +169,7 @@ export class SpotifyCardEditor extends LitElement implements LovelaceCardEditor 
       this.config = { 
         ...this.config,
         known_connect_devices: (this.config.known_connect_devices ?? []).concat([{
-          id: currentPlayer?.device?.id ?? '',
+          id: currentPlayer?.device?.device_id ?? '',
           name: currentPlayer?.device.name ?? ''
         }])
       };

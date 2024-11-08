@@ -1,5 +1,5 @@
 import { ConnectDevice, CurrentPlayer, Playlist, PlaybackOptions, PlaylistFilter } from './types';
-import { SpotifyCard } from './spotify-card';
+import { SpotifyCard } from './spotify-card-v2';
 
 interface Message {
   type: string;
@@ -69,7 +69,7 @@ export class SpotcastConnector implements ISpotcastConnector {
     const current_player = this.getCurrentPlayer();
     // Play uri on active device, if there is any
     if (current_player) {
-      this.playUriOnConnectDevice(current_player.id, uri);
+      this.playUriOnConnectDevice(current_player.device_id, uri);
     } else {
       const default_device = this.parent.config.default_device;
       // If default device is configured, try to play uri only on this device
@@ -88,7 +88,7 @@ export class SpotcastConnector implements ISpotcastConnector {
     const connect_device = this.parent.devices.filter((device) => device.name == device_name);
     const known_device = this.parent.config.known_connect_devices?.filter((device) => device.name == device_name);
     if (connect_device.length > 0) {
-      return this.playUriOnConnectDevice(connect_device[0].id, uri);
+      return this.playUriOnConnectDevice(connect_device[0].device_id, uri);
     }
     else if (known_device && known_device.length > 0) {
       return this.playUriOnConnectDevice(known_device[0].id, uri);
@@ -167,18 +167,16 @@ export class SpotcastConnector implements ISpotcastConnector {
   }
 
   private async fetchDevices(): Promise<void> {
-    // console.log('fetchDevices');
     const message: Message = {
       type: 'spotcast/devices',
       account: this.parent.config.account,
     };
     try {
-      const res: any = <Array<ConnectDevice>>await this.parent.hass.callWS(message);
-      this.parent.devices = res.devices;
+      const res: Array<ConnectDevice> = await this.parent.hass.callWS(message);
+      this.parent.devices = res;
     } catch (e) {
       throw Error('Failed to fetch devices: ' + e);
     }
-    // console.log('fetchDevices:', JSON.stringify(this.devices, null, 2));
   }
 
   /**

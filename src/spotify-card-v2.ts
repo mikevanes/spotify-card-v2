@@ -38,7 +38,7 @@ import { HassEntity, servicesColl, subscribeEntities, HassEntities } from 'home-
 // Display card version in console
 /* eslint no-console: 0 */
 console.info(
-  `%c  SPOTIFY-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
+  `%c  SPOTIFY-CARD-v2 \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray'
 );
@@ -46,8 +46,8 @@ console.info(
 // Configures the preview in the Lovelace card picker
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'spotify-card',
-  name: 'Spotify Card',
+  type: 'spotify-card-v2',
+  name: 'Spotify Card-v2',
   description: localize('common.description'),
   preview: true,
 });
@@ -83,7 +83,7 @@ export function hasChangedMediaPlayer(newVal: HassEntity, oldVal: HassEntity): b
   return false;
 }
 
-@customElement('spotify-card')
+@customElement('spotify-card-v2')
 export class SpotifyCard extends LitElement {
   public hass!: HomeAssistant;
 
@@ -122,7 +122,7 @@ export class SpotifyCard extends LitElement {
 
   // Calls the editor
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
-    return document.createElement('spotify-card-editor') as LovelaceCardEditor;
+    return document.createElement('spotify-card-v2-editor') as LovelaceCardEditor;
   }
 
   // Returns default config for Lovelace picker
@@ -228,11 +228,11 @@ export class SpotifyCard extends LitElement {
       }
     });
     if (changedProps.has('player') && this.player?.device && 
-        this.player.device.id != (changedProps.get('player') as CurrentPlayer)?.device?.id) {
-      console.log('player device changed', this.player.device.id);
+        this.player.device.device_id != (changedProps.get('player') as CurrentPlayer)?.device?.device_id) {
+      console.log('player device changed', this.player.device.device_id);
 
       const [,known_spotify_connect_devices,] = this.getFilteredDevices();
-      const knownConnectDevice = known_spotify_connect_devices.find(x => x.id == this.player?.device.id);
+      const knownConnectDevice = known_spotify_connect_devices.find(x => x.id == this.player?.device.device_id);
       this._connect_player_entity_id = knownConnectDevice ? knownConnectDevice.entity_id : undefined;
       this._connect_player_state = undefined;
     }
@@ -421,11 +421,11 @@ export class SpotifyCard extends LitElement {
     this.confirmDeviceSelection(elem);
     const current_player = this.spotcast_connector.getCurrentPlayer();
     if (current_player) {
-      return this.spotcast_connector.transferPlaybackToConnectDevice(device.id);
+      return this.spotcast_connector.transferPlaybackToConnectDevice(device.device_id);
     }
     const playlist = this.playlists[0];
     console.log('spotifyDeviceSelected playing first playlist');
-    this.spotcast_connector.playUriOnConnectDevice(device.id, playlist.uri);
+    this.spotcast_connector.playUriOnConnectDevice(device.device_id, playlist.uri);
   }
   
   private knownSpotifyConnectDeviceSelected(elem: MouseEvent, device: KnownConnectDevice): void {

@@ -1,5 +1,5 @@
 {
-    "name": "Spotify Lovelace Card",
+    "name": "Spotify Lovelace Card V2",
     "render_readme": true,
-    "filename": "spotify-card.js"
+    "filename": "spotify-card-v2.js"
 }

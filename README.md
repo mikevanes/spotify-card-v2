@@ -1,9 +1,9 @@
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs) [![spotify-card](https://img.shields.io/github/release/custom-cards/spotify-card.svg)](https://github.com/custom-cards/spotify-card)
+<!-- [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs) [![spotify-card](https://img.shields.io/github/release/custom-cards/spotify-card.svg)](https://github.com/custom-cards/spotify-card)
 
-![Build](https://github.com/custom-cards/spotify-card/workflows/Build/badge.svg)
+![Build](https://github.com/custom-cards/spotify-card/workflows/Build/badge.svg) -->
 
 ## Home Assistant Spotify Lovelace Card
-
+**DISCLAIMER**: This is a fork of the original Spotify card. As the project was abandoned and spotcast v4.0 and upwards breaks the card this fork aims to keep it working.
 **DISCLAIMER**: _This project is a private open source project and doesn't have any connection with Spotify._
 
 This card supports listing the users currently available devices and the users playlists on [Spotify](https://www.spotify.com). Choose an online media player and click on a playlist to play it on the device. This component will query the current playback from the [Spotify Integration](https://www.home-assistant.io/integrations/spotify/) and tries to reflect the currently playing playlist.
@@ -23,18 +23,18 @@ This card should work in all newer major browsers. If it does not work for you p
 
 ### Installation
 
-#### HACS users
+<!-- #### HACS users
 
-Follow the HACS instructions when installing it.
+Follow the HACS instructions when installing it. -->
 
 #### Manually
 
-Copy the content of the `dist` folder to `www/community/spotify-card/` in your Home Assistant configuration directory. Create these folders if they do not exist.
+Copy the content of the `dist` folder to `www/community/spotify-card-v2/` in your Home Assistant configuration directory. Create these folders if they do not exist.
 
-Then you have to add spotify card to your resources. This can be done via `Settings -> Lovelace Dashboards -> Resources`. Add this path:
+Then you have to add spotify card v2 to your resources. This can be done via `Settings -> Lovelace Dashboards -> Resources`. Add this path:
 
 ```
-  /local/community/spotify-card/spotify-card.js
+  /local/community/spotify-card-v2/spotify-card-v2.js
 ```
 
 If you do not have the `Resources` tab available, you have to enable the advanced mode for Lovelace. To do so, click on your username on your Home Assistant dashboard and enanble the setting.
@@ -80,12 +80,12 @@ If you are not using the visual configuration of Lovelace you can add the card l
 
 ```yaml
   cards:
-    - type: 'custom:spotify-card'
+    - type: 'custom:spotify-card-v2'
       account: <optional> which account to use for spotcast. Defaults to "default"
       height: <optional pixels height for the playlist element. If content is larger scrolling will be enabled>
       limit: <optional number of playlists to retrieve (default 10)>
       device: <optional name of a device to pre-select>
-      playlist_type: <optional featured|discover-weekly> Change type of playlists shown. Default are your normal playlists.
+      playlist_type: <optional featured|discover-weekly|recently-played> Change type of playlists shown. Default are your normal playlists.
       always_play_random_song: <optional true> Set to start playlists from a random song.
       country_code: <optional country code to show featured playlist relevent to a particular country. https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 >
       hide_warning: <optional true> Hide warnings if they are displayed.

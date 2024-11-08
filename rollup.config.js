@@ -16,7 +16,7 @@ const plugins = [
 
 export default [
   {
-    input: 'src/spotify-card.ts',
+    input: 'src/spotify-card-v2.ts',
     output: {
       dir: 'dist',
       format: 'es',
