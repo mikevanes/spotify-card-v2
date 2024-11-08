@@ -4,6 +4,7 @@
 
 ## Home Assistant Spotify Lovelace Card
 **DISCLAIMER**: This is a fork of the original Spotify card. As the project was abandoned and spotcast v4.0 and upwards breaks the card this fork aims to keep it working.
+
 **DISCLAIMER**: _This project is a private open source project and doesn't have any connection with Spotify._
 
 This card supports listing the users currently available devices and the users playlists on [Spotify](https://www.spotify.com). Choose an online media player and click on a playlist to play it on the device. This component will query the current playback from the [Spotify Integration](https://www.home-assistant.io/integrations/spotify/) and tries to reflect the currently playing playlist.
