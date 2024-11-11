@@ -169,7 +169,7 @@ export class SpotifyCardEditor extends LitElement implements LovelaceCardEditor 
       this.config = { 
         ...this.config,
         known_connect_devices: (this.config.known_connect_devices ?? []).concat([{
-          id: currentPlayer?.device?.device_id ?? '',
+          id: currentPlayer?.device?.id ?? '',
           name: currentPlayer?.device.name ?? ''
         }])
       };
