@@ -228,11 +228,9 @@ export class SpotifyCard extends LitElement {
       }
     });
     if (changedProps.has('player') && this.player?.device && 
-        this.player.device.device_id != (changedProps.get('player') as CurrentPlayer)?.device?.device_id) {
-      console.log('player device changed', this.player.device.device_id);
-
+    this.player.device.id != (changedProps.get('player') as CurrentPlayer)?.device?.id) {
       const [,known_spotify_connect_devices,] = this.getFilteredDevices();
-      const knownConnectDevice = known_spotify_connect_devices.find(x => x.id == this.player?.device.device_id);
+      const knownConnectDevice = known_spotify_connect_devices.find(x => x.id == this.player?.device.id);
       this._connect_player_entity_id = knownConnectDevice ? knownConnectDevice.entity_id : undefined;
       this._connect_player_state = undefined;
     }
@@ -250,7 +248,7 @@ export class SpotifyCard extends LitElement {
   private getPlayingState(): boolean {
     return this._connect_player_state 
       ? this._connect_player_state.state == 'playing'
-      : this._spotify_state?.state == 'playing' ?? false;
+      : this._spotify_state?.state == 'playing';
   }
 
   private getShuffleState(): boolean {
@@ -421,11 +419,11 @@ export class SpotifyCard extends LitElement {
     this.confirmDeviceSelection(elem);
     const current_player = this.spotcast_connector.getCurrentPlayer();
     if (current_player) {
-      return this.spotcast_connector.transferPlaybackToConnectDevice(device.device_id);
+      return this.spotcast_connector.transferPlaybackToConnectDevice(device.id);
     }
     const playlist = this.playlists[0];
     console.log('spotifyDeviceSelected playing first playlist');
-    this.spotcast_connector.playUriOnConnectDevice(device.device_id, playlist.uri);
+    this.spotcast_connector.playUriOnConnectDevice(device.id, playlist.uri);
   }
   
   private knownSpotifyConnectDeviceSelected(elem: MouseEvent, device: KnownConnectDevice): void {

@@ -1,4 +1,4 @@
-import { ConnectDevice, CurrentPlayer, Playlist, PlaybackOptions, PlaylistFilter } from './types';
+import { ConnectDevice, IncomingConnectDevice, CurrentPlayer, Playlist, PlaybackOptions, PlaylistFilter, ChromecastDevice } from './types';
 import { SpotifyCard } from './spotify-card-v2';
 
 interface Message {
@@ -69,7 +69,7 @@ export class SpotcastConnector implements ISpotcastConnector {
     const current_player = this.getCurrentPlayer();
     // Play uri on active device, if there is any
     if (current_player) {
-      this.playUriOnConnectDevice(current_player.device_id, uri);
+      this.playUriOnConnectDevice(current_player.id, uri);
     } else {
       const default_device = this.parent.config.default_device;
       // If default device is configured, try to play uri only on this device
@@ -88,7 +88,7 @@ export class SpotcastConnector implements ISpotcastConnector {
     const connect_device = this.parent.devices.filter((device) => device.name == device_name);
     const known_device = this.parent.config.known_connect_devices?.filter((device) => device.name == device_name);
     if (connect_device.length > 0) {
-      return this.playUriOnConnectDevice(connect_device[0].device_id, uri);
+      return this.playUriOnConnectDevice(connect_device[0].id, uri);
     }
     else if (known_device && known_device.length > 0) {
       return this.playUriOnConnectDevice(known_device[0].id, uri);
@@ -159,7 +159,8 @@ export class SpotcastConnector implements ISpotcastConnector {
       account: this.parent.config.account,
     };
     try {
-      this.parent.player = <CurrentPlayer>await this.parent.hass.callWS(message);
+      const currentPlayer = <CurrentPlayer> await this.parent.hass.callWS(message);
+      this.parent.player = currentPlayer;
     } catch (e) {
       throw Error('Failed to fetch player: ' + e);
     }
@@ -172,11 +173,42 @@ export class SpotcastConnector implements ISpotcastConnector {
       account: this.parent.config.account,
     };
     try {
-      const res: Array<ConnectDevice> = await this.parent.hass.callWS(message);
-      this.parent.devices = res;
+      const res: Array<IncomingConnectDevice> = await this.parent.hass.callWS(message);
+      const normalizedDevices: ConnectDevice[] = this.normalizeDevices(res);
+
+      this.parent.devices = normalizedDevices;
     } catch (e) {
       throw Error('Failed to fetch devices: ' + e);
     }
+  }
+
+  private normalizeDevice(device: IncomingConnectDevice): ConnectDevice {
+    // Ensure that each key exists with the correct type
+    if (!device.device_id && !device.id) {
+      throw new Error("Device object must have either 'device_id' or 'id'");
+    }
+    if (!device.device_type && !device.type) {
+      throw new Error("Device object must have either 'device_type' or 'type'");
+    }
+  
+    // Use device_id if available, otherwise fall back to id
+    const id = device.device_id ?? device.id!;
+    const type = device.device_type ?? device.type!;
+  
+    return {
+      id,
+      type,
+      is_active: device.is_active,
+      is_private_session: device.is_private_session,
+      is_restricted: device.is_restricted,
+      name: device.name,
+      volume_percent: device.volume_percent,
+      supports_volume: device.supports_volume,
+    };
+  }
+  
+  private normalizeDevices(devices: IncomingConnectDevice[]): ConnectDevice[] {
+    return devices.map((device) => this.normalizeDevice(device));
   }
 
   /**
@@ -184,7 +216,8 @@ export class SpotcastConnector implements ISpotcastConnector {
    */
   private async fetchChromecasts(): Promise<void> {
     try {
-      this.parent.chromecast_devices = await this.parent.hass.callWS({ type: 'spotcast/castdevices' });
+      const res: Array<ChromecastDevice> = await this.parent.hass.callWS({ type: 'spotcast/castdevices' });
+      this.parent.chromecast_devices = res;
     } catch (e) {
       this.parent.chromecast_devices = [];
       throw Error('Failed to fetch devices: ' + e);

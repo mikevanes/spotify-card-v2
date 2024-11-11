@@ -106,13 +106,28 @@ export interface PlaybackOptions {
 }
 
 export interface ConnectDevice {
-  device_id: string;
+  id: string;
   is_active: boolean;
   is_private_session: boolean;
   is_restricted: boolean;
   name: string;
-  device_type: string;
+  type: string;
   volume_percent: number;
+  supports_volume: boolean;
+}
+
+// For mapping purposes as we can receive different device objects.
+export interface IncomingConnectDevice {
+  device_id?: string;
+  id?: string;
+  is_active: boolean;
+  is_private_session: boolean;
+  is_restricted: boolean;
+  name: string;
+  device_type?: string;
+  type?: string;
+  volume_percent: number;
+  supports_volume: boolean;
 }
 
 export interface KnownConnectDevice {
